@@ -1,5 +1,6 @@
 ﻿#include "templatematching.h"
 #include "ui_templatematching.h"
+
 #include<atlconv.h>
 #include<qmessagebox.h>
 #include<thread>
