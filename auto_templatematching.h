@@ -29,6 +29,7 @@ private slots:
     void on_button_canny_clicked();
     void on_button_calDif_clicked();
     void on_button_cutout_clicked();
+    void on_button_help_clicked();
 
 private:
     Ui::Auto_TemplateMatching *ui;
@@ -41,6 +42,7 @@ private:
     int ref_x, ref_y, ref_width, ref_height, offx_range1, offx_range2, offy_range1, offy_range2, offx_range, offy_range, low_threshold1, low_threshold2 ;
     double prog = 0;
 
+    vector<Point>dif_array;
         //文件夹路径：
     TCHAR folder_name[MAX_PATH];
         //参考通道号：

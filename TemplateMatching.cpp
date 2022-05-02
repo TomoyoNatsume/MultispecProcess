@@ -176,17 +176,24 @@ void TemplateMatching::on_button_calDif_clicked()
 	ref_width = ref_size.x;
 	ref_height = ref_size.y;
 	//设置offx_range,offy_range:
-	offx_range1 = (ref_x - 200 < 0) ? 0 : (ref_x - 200);
-	offy_range1 = (ref_y - 200 < 0) ? 0 : (ref_y - 200);
-	offx_range2 = (ref_x + 200 + ref_width > width+1) ? (width-ref_width+1) : (ref_x + 200);
-	offy_range2 = (ref_y + 200 + ref_height > height+1) ? (height-ref_height+1) : (ref_y + 200);
+	if (ui->checkBox_Overallscan->isChecked())
+	{
+		offx_range1 = 0;
+		offy_range1 = 0;
+		offx_range2 = width - ref_width + 1;
+		offy_range2 = height - ref_height + 1;
+		offx_range = offx_range2 - offx_range1;
+		offy_range = offy_range2 - offy_range1;
 
-	offx_range1 = 0;
-	offy_range1 = 0;
-	offx_range2 = width - ref_width + 1;
-	offy_range2 = height - ref_height + 1;
-	offx_range = offx_range2 - offx_range1;
-	offy_range = offy_range2 - offy_range1;
+	}
+	else
+	{
+		offx_range1 = (ref_x - 200 < 0) ? 0 : (ref_x - 200);
+		offy_range1 = (ref_y - 200 < 0) ? 0 : (ref_y - 200);
+		offx_range2 = (ref_x + 200 + ref_width > width + 1) ? (width - ref_width + 1) : (ref_x + 200);
+		offy_range2 = (ref_y + 200 + ref_height > height + 1) ? (height - ref_height + 1) : (ref_y + 200);
+	}
+
 	vector<double>dif_arr;
 	//std::thread th_cal_dif(CalDif, std::ref(img1_), std::ref(img2_), std::ref(dif_arr),this);
 	//std::thread th_show_progress(&TemplateMatching::ShowProgress, this);
@@ -241,7 +248,8 @@ void TemplateMatching::on_button_help_clicked()
 		"4.同样地，在样本框尺寸中填入样本框的x、y方向长度。格式同上\n"
 		"5.或者直接点击<样本框选取>按钮，手动绘制矩形框，结果会自动填入\n"
 		"6.程序将给出计算出的两幅图片偏差值，显示在<偏差值>一栏中\n"
-		"7.程序会自动将rgb图像转为灰度图像，再进行计算\n";
+		"7.程序会自动将rgb图像转为灰度图像，再进行计算\n"
+		"8.如果勾选全图扫描，则计算偏差时会更慢，但更精确。否则只扫描样本框附近的部分区域，速度更快";
 	QMessageBox::information(this, "Help", QString::fromStdWString(help_msg), QMessageBox::Ok);
 	return;
 }

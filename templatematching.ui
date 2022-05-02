@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="openFileButton2">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>80</y>
+      <x>70</x>
+      <y>90</y>
       <width>100</width>
       <height>23</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="openFileButton1">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>50</y>
+      <x>70</x>
+      <y>60</y>
       <width>100</width>
       <height>23</height>
      </rect>
@@ -43,9 +43,9 @@
    <widget class="QLabel" name="label_1">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>240</y>
-      <width>81</width>
+      <x>230</x>
+      <y>280</y>
+      <width>271</width>
       <height>21</height>
      </rect>
     </property>
@@ -56,8 +56,8 @@
    <widget class="QLabel" name="label_offset">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>240</y>
+      <x>150</x>
+      <y>250</y>
       <width>211</width>
       <height>21</height>
      </rect>
@@ -69,9 +69,9 @@
    <widget class="QLabel" name="label_filename1">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>50</y>
-      <width>611</width>
+      <x>190</x>
+      <y>60</y>
+      <width>511</width>
       <height>16</height>
      </rect>
     </property>
@@ -82,9 +82,9 @@
    <widget class="QLabel" name="label_filename2">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>80</y>
-      <width>611</width>
+      <x>190</x>
+      <y>90</y>
+      <width>511</width>
       <height>16</height>
      </rect>
     </property>
@@ -95,8 +95,8 @@
    <widget class="QPushButton" name="button_calDif">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>150</y>
+      <x>70</x>
+      <y>220</y>
       <width>101</width>
       <height>23</height>
      </rect>
@@ -108,8 +108,8 @@
    <widget class="QLineEdit" name="lineEdit_refPos">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>150</y>
+      <x>620</x>
+      <y>160</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -118,8 +118,8 @@
    <widget class="QLineEdit" name="lineEdit_refSize">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>180</y>
+      <x>620</x>
+      <y>190</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -128,8 +128,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>150</y>
+      <x>370</x>
+      <y>160</y>
       <width>251</width>
       <height>20</height>
      </rect>
@@ -141,8 +141,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>180</y>
+      <x>370</x>
+      <y>190</y>
       <width>81</width>
       <height>20</height>
      </rect>
@@ -154,8 +154,8 @@
    <widget class="QPushButton" name="button_help">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
+      <x>70</x>
+      <y>30</y>
       <width>101</width>
       <height>23</height>
      </rect>
@@ -167,8 +167,8 @@
    <widget class="QPushButton" name="button_selectRef">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>150</y>
+      <x>70</x>
+      <y>160</y>
       <width>101</width>
       <height>23</height>
      </rect>
@@ -180,8 +180,8 @@
    <widget class="QPushButton" name="button_showEffect">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>240</y>
+      <x>70</x>
+      <y>280</y>
       <width>101</width>
       <height>24</height>
      </rect>
@@ -193,8 +193,8 @@
    <widget class="QPushButton" name="button_canny1">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>110</y>
+      <x>70</x>
+      <y>120</y>
       <width>101</width>
       <height>24</height>
      </rect>
@@ -206,14 +206,27 @@
    <widget class="QPushButton" name="button_canny2">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>110</y>
+      <x>420</x>
+      <y>120</y>
       <width>101</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
      <string>边缘检测2</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_Overallscan">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>220</y>
+      <width>161</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>是否全图扫描</string>
     </property>
    </widget>
   </widget>
