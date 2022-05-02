@@ -35,14 +35,82 @@
     <ClCompile Include="MultispecProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ResourceCompile Include="$pro_name$.rc">
-    </ResourceCompile>
-    <None Include="$pro_name$.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="$pro_name$.def">
-      <Filter>Resource Files</Filter>
-    </None>
-
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="auto_templatematching.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OnMouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pca.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="specextract.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemplateMatching.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testchildwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="auto_templatematching.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="pca.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="specextract.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="templatematching.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="testchildwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CsvOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileExplorer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OnMouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="auto_templatematching.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="MyFirstQt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="pca.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="specextract.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="templatematching.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="testchildwindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>

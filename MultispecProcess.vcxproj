@@ -15,8 +15,7 @@
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
-    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')"
-      >$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -41,11 +40,8 @@
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
-  <Target Name="QtMsBuildNotFound"
-    BeforeTargets="CustomBuild;ClCompile"
-    Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
-    <Message Importance="High"
-      Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
   </Target>
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
@@ -89,12 +85,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtRcc Include="MultispecProcess.qrc"/>
-    <QtUic Include="MultispecProcess.ui"/>
-    <QtMoc Include="MultispecProcess.h"/>
-    <ClCompile Include="MultispecProcess.cpp"/>
-    <ClCompile Include="main.cpp"/>
-
+    <ClCompile Include="OnMouse.cpp" />
+    <ClCompile Include="pca.cpp" />
+    <ClCompile Include="specextract.cpp" />
+    <ClCompile Include="TemplateMatching.cpp" />
+    <ClCompile Include="testchildwindow.cpp" />
+    <QtRcc Include="MultispecProcess.qrc" />
+    <QtUic Include="auto_templatematching.ui" />
+    <QtUic Include="MultispecProcess.ui" />
+    <QtMoc Include="MultispecProcess.h" />
+    <ClCompile Include="auto_templatematching.cpp" />
+    <ClCompile Include="MultispecProcess.cpp" />
+    <ClCompile Include="main.cpp" />
+    <QtUic Include="MyFirstQt.ui" />
+    <QtUic Include="pca.ui" />
+    <QtUic Include="specextract.ui" />
+    <QtUic Include="templatematching.ui" />
+    <QtUic Include="testchildwindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="auto_templatematching.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CsvOperation.h" />
+    <ClInclude Include="FileExplorer.h" />
+    <ClInclude Include="OnMouse.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="tools.h" />
+    <QtMoc Include="testchildwindow.h" />
+    <QtMoc Include="templatematching.h" />
+    <QtMoc Include="specextract.h" />
+    <QtMoc Include="pca.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
