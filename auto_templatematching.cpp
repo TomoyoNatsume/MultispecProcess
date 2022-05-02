@@ -226,4 +226,14 @@ void CalDifAT(Mat& img1_, Mat& img2_, vector<double>& dif_arr, Auto_TemplateMatc
 void Auto_TemplateMatching::on_button_help_clicked()
 {
 
+    LPCWSTR help_msg = L"1.通过<打开图片>按钮，分别打开两幅需要对其的图片\n"
+        "2.在图1中确定一个样本框，程序将根据样本框进行对齐\n"
+        "3.在<样本框位置>一栏填入样本框的x、y轴位置。两个整数，用空格分开，如：100 200\n"
+        "4.同样地，在样本框尺寸中填入样本框的x、y方向长度。格式同上\n"
+        "5.或者直接点击<样本框选取>按钮，手动绘制矩形框，结果会自动填入\n"
+        "6.程序将给出计算出的两幅图片偏差值，显示在<偏差值>一栏中\n"
+        "7.程序会自动将rgb图像转为灰度图像，再进行计算\n"
+        "8.如果勾选全图扫描，则计算偏差时会更慢，但更精确。否则只扫描样本框附近的部分区域，速度更快";
+    QMessageBox::information(this, "Help", QString::fromStdWString(help_msg), QMessageBox::Ok);
+    return;
 }
