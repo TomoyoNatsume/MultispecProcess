@@ -36,9 +36,11 @@ void CannyTrackbarCallbackAT(int, void*userdata)
     Auto_TemplateMatching* at_temp = (Auto_TemplateMatching*)userdata;
     cv::Canny(at_temp->img1, at_temp->img1_, at_temp->low_threshold1, at_temp->low_threshold1 * 3);
     imshow("canny", at_temp->img1_);
+    return;
 }
 void Auto_TemplateMatching::on_button_canny_clicked()
 {
+    //边缘检测窗口,手动调整canny阈值,得到一个合适的值.随后 
     if (img1.empty())
     {
         QMessageBox::information(this, "warning", QString::fromStdWString(L"没有已打开图片"), QMessageBox::Ok);
@@ -47,7 +49,7 @@ void Auto_TemplateMatching::on_button_canny_clicked()
     imshow("canny", img1);
     namedWindow("canny", WINDOW_AUTOSIZE);
     createTrackbar("Threshold", "canny", &low_threshold1, 255, CannyTrackbarCallbackAT);
-
+    return;
 }
 
 //鼠标追踪回调函数
