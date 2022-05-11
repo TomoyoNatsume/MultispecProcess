@@ -40,6 +40,17 @@ void CannyTrackbarCallbackAT(int, void*userdata)
 }
 void Auto_TemplateMatching::on_button_canny_clicked()
 {
+    USES_CONVERSION;
+    int channel_order = ui->spinBox->value();
+
+    char astr_folder_name[MAX_PATH];
+    strcpy(astr_folder_name, W2A(folder_name));
+    string string_folder_name;
+    string_folder_name = string(W2A(folder_name))+string("\\bmp\\") + format("%02d", channel_order) + string("\\out.0001.bmp");
+    const char* astr_file_name=string_folder_name.c_str();
+
+
+    img1 = imread(astr_file_name, IMREAD_COLOR);
     //边缘检测窗口,手动调整canny阈值,得到一个合适的值.随后 
     if (img1.empty())
     {
@@ -49,6 +60,7 @@ void Auto_TemplateMatching::on_button_canny_clicked()
     imshow("canny", img1);
     namedWindow("canny", WINDOW_AUTOSIZE);
     createTrackbar("Threshold", "canny", &low_threshold1, 255, CannyTrackbarCallbackAT);
+
     return;
 }
 
