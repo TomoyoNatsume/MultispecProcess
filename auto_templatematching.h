@@ -42,6 +42,9 @@ private:
     int ref_x, ref_y, ref_width, ref_height, offx_range1, offx_range2, offy_range1, offy_range2, offx_range, offy_range, low_threshold1, low_threshold2 ;
     double prog = 0;
 
+    //样本框强度总量
+    int ref_total_intense;
+
     vector<Point>dif_array;
         //文件夹路径：
     TCHAR folder_name[MAX_PATH];
