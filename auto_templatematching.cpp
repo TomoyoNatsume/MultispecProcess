@@ -63,7 +63,7 @@ void Auto_TemplateMatching::on_button_canny_clicked()
     }
     imshow("canny", img1);
     namedWindow("canny", WINDOW_AUTOSIZE);
-    createTrackbar("Threshold", "canny", &low_threshold1, 255, CannyTrackbarCallbackAT);
+    createTrackbar("Threshold", "canny", &low_threshold1, 255, CannyTrackbarCallbackAT,this);
 
 
 
@@ -126,23 +126,58 @@ void Auto_TemplateMatching::on_button_cutout_clicked()
     }
     return;
 }
-int CalThreshold(Mat&img,int rti,int cur_thresh)
+//计算两通道threshold
+int CalThreshold(Mat &img2,Auto_TemplateMatching* at)
 {
-    int low_threshold=cur_thresh;
+    int cur_thresh = at->low_threshold1;
+    int ref_total_intense = at->ref_total_intense;
+    int low_threshold=(cur_thresh-10)<5?5:(cur_thresh-10);
+    int total_intense = 0;
+    int dif=-1;
+    int return_val=low_threshold;
+    Mat img2_;
+    Canny(img2, img2_, low_threshold, low_threshold * 3);
+    //for (int i = 0; i < at->ref_width; i++)
+    //{
+    //    for (int j = 0; j < at->ref_height; j++)
+    //    {
+    //        total_intense += img2_.at<uchar>(i + at->ref_x, j + at->ref_y);
+    //    }
+    //}
+    //dif1 = (total_intense - ref_total_intense) ^ 2;
     for (low_threshold; low_threshold < cur_thresh + 10; low_threshold++)
     {
-        
+        Canny(img2, img2_, low_threshold, low_threshold * 3);
+        for (int i = 0; i < at->ref_width; i++)
+        {
+            for (int j = 0; j < at->ref_height; j++)
+            {
+                total_intense += img2_.at<uchar>(i + at->ref_x, j + at->ref_y);
+            }
+        }
+        if (dif == -1)
+        {
+            dif = (total_intense - ref_total_intense) ^ 2;
+        }
+        else
+        {
+            if (((total_intense - ref_total_intense) ^ 2) < dif)
+            {
+                dif = (total_intense - ref_total_intense) ^ 2;
+                return_val = low_threshold;
+            }
+        }
     }
-    return low_threshold;
+    return return_val;
 }
 void Auto_TemplateMatching::on_button_calDif_clicked()
 {
+    //检查并提取样本框尺寸数据
 	if (ui->lineEdit_refPos->text().split(' ').size() != 2 || ui->lineEdit_refSize->text().split(' ').size() != 2)
 	{
 		QMessageBox::warning(this, "Warning", QString::fromStdWString(L"请输入正确格式的坐标值/尺寸值"), QMessageBox::Ok);
 		return;
 	}
-
 	bool toInt_isok1, toInt_isok2, toInt_isok3, toInt_isok4;
 	ref_pos.x = ui->lineEdit_refPos->text().split(' ')[0].toInt(&toInt_isok1);
 	ref_pos.y = ui->lineEdit_refPos->text().split(' ')[1].toInt(&toInt_isok2);
@@ -153,12 +188,15 @@ void Auto_TemplateMatching::on_button_calDif_clicked()
 		QMessageBox::warning(this, "Warning", QString::fromStdWString(L"请输入正确格式的坐标值/尺寸值"), QMessageBox::Ok);
 		return;
 	}
-
-
-	if ((img1.data == NULL) || (img2.data == NULL)) {
-		QMessageBox::warning(this, "Warning", QString::fromStdWString(L"读取图像失败"), QMessageBox::Ok);
+    //检查图像文件
+	if (img1.empty()) {
+		QMessageBox::warning(this, "Warning", QString::fromStdWString(L"没有已读取的图像数据"), QMessageBox::Ok);
 		return;
 	}
+
+
+    //自动计算各个通道的threshold
+
 
 	int width = img1_.cols;
 	int height = img1_.rows;

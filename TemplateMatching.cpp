@@ -42,8 +42,7 @@ void TemplateMatching::on_openFileButton1_clicked()
     wchar_t wstr_file_name[MAX_PATH] = L"已打开文件：";
     wcscat(wstr_file_name, file.lpstrFile);
     qstr_file_name = QString::fromStdWString(wstr_file_name);
-	string str_file_name(astr_file_name);
-    img1 = imread(str_file_name,IMREAD_COLOR);
+    img1 = imread(astr_file_name,IMREAD_COLOR);
 	if (img1.empty())
 	{
 		ui->label_filename1->setText(QString::fromStdWString(L"打开文件失败"));
