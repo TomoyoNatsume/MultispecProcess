@@ -38,6 +38,10 @@ void CannyTrackbarCallbackAT(int, void*userdata)
     imshow("canny", at_temp->img1_);
     return;
 }
+
+//img1中为原始基准图像
+//img1_中为边缘基准图像
+//img1_clone
 void Auto_TemplateMatching::on_button_canny_clicked()
 {
     USES_CONVERSION;
@@ -60,6 +64,8 @@ void Auto_TemplateMatching::on_button_canny_clicked()
     imshow("canny", img1);
     namedWindow("canny", WINDOW_AUTOSIZE);
     createTrackbar("Threshold", "canny", &low_threshold1, 255, CannyTrackbarCallbackAT);
+
+
 
     return;
 }
@@ -108,6 +114,8 @@ void Auto_TemplateMatching::on_button_cutout_clicked()
     Canny(img1, img1_clone, low_threshold1, low_threshold1 * 3);
     imshow("select sample", img1_);
     setMouseCallback("select sample", OnMouseForRefAT, this);
+
+
     return;
 }
 
