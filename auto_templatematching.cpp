@@ -41,7 +41,7 @@ void CannyTrackbarCallbackAT(int, void*userdata)
 
 //img1中为原始基准图像
 //img1_中为边缘基准图像
-//img1_clone
+//img1_clone为框选样本框时的临时图像
 void Auto_TemplateMatching::on_button_canny_clicked()
 {
     USES_CONVERSION;
@@ -115,10 +115,26 @@ void Auto_TemplateMatching::on_button_cutout_clicked()
     imshow("select sample", img1_);
     setMouseCallback("select sample", OnMouseForRefAT, this);
 
-
+    //框选完成后计算样本框内边缘图像的总强度值
+    ref_total_intense = 0;
+    for (int i = 0; i < ref_width; i++)
+    {
+        for (int j = 0; j < ref_height; j++)
+        {
+            ref_total_intense += img1_.at<uchar>(i+ref_x, j+ref_y);
+        }
+    }
     return;
 }
-
+int CalThreshold(Mat&img,int rti,int cur_thresh)
+{
+    int low_threshold=cur_thresh;
+    for (low_threshold; low_threshold < cur_thresh + 10; low_threshold++)
+    {
+        
+    }
+    return low_threshold;
+}
 void Auto_TemplateMatching::on_button_calDif_clicked()
 {
 	if (ui->lineEdit_refPos->text().split(' ').size() != 2 || ui->lineEdit_refSize->text().split(' ').size() != 2)

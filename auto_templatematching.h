@@ -23,6 +23,7 @@ public:
     friend void CannyTrackbarCallbackAT(int, void*);
     friend void OnMouseForRefAT(int event, int x, int y, int, void* userdata);
     friend void CalDifAT(Mat& img1_, Mat& img2_, vector<double>& dif_arr, Auto_TemplateMatching* tp);
+    friend int CalThreshold(Mat& img1,int rti);
 
 private slots:
     void on_button_openFolder_clicked();
