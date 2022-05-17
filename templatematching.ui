@@ -43,9 +43,9 @@
    <widget class="QLabel" name="label_1">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>210</x>
       <y>280</y>
-      <width>271</width>
+      <width>61</width>
       <height>21</height>
      </rect>
     </property>
@@ -56,8 +56,8 @@
    <widget class="QLabel" name="label_offset">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>250</y>
+      <x>320</x>
+      <y>280</y>
       <width>211</width>
       <height>21</height>
      </rect>

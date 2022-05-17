@@ -5,6 +5,7 @@
 #include<qmessagebox.h>
 #include<thread>
 #include<qprogressbar.h>
+#include<ctime>
 
 Auto_TemplateMatching::Auto_TemplateMatching(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +29,8 @@ void Auto_TemplateMatching::on_button_openFolder_clicked()
     wcscpy(folder_name, bi.pszDisplayName);
     ui->label_opened_folder->setText(QString::fromStdWString(L"已打开文件夹：") + QString::fromStdWString(folder_name));
 
+    USES_CONVERSION;
+    strcpy(astr_folder_name , W2A(folder_name));
     return;
 }
 
@@ -44,13 +47,9 @@ void CannyTrackbarCallbackAT(int, void*userdata)
 //img1_clone为框选样本框时的临时图像
 void Auto_TemplateMatching::on_button_canny_clicked()
 {
-    USES_CONVERSION;
     int channel_order = ui->spinBox->value();
-
-    char astr_folder_name[MAX_PATH];
-    strcpy(astr_folder_name, W2A(folder_name));
     string string_folder_name;
-    string_folder_name = string(W2A(folder_name))+string("\\bmp\\") + format("%02d", channel_order) + string("\\out.0001.bmp");
+    string_folder_name = string(astr_folder_name)+string("\\bmp\\") + format("%02d", channel_order) + string("\\out.0001.bmp");
     const char* astr_file_name=string_folder_name.c_str();
 
 
@@ -115,15 +114,7 @@ void Auto_TemplateMatching::on_button_cutout_clicked()
     imshow("select sample", img1_);
     setMouseCallback("select sample", OnMouseForRefAT, this);
 
-    //框选完成后计算样本框内边缘图像的总强度值
-    ref_total_intense = 0;
-    for (int i = 0; i < ref_width; i++)
-    {
-        for (int j = 0; j < ref_height; j++)
-        {
-            ref_total_intense += img1_.at<uchar>(i+ref_x, j+ref_y);
-        }
-    }
+
     return;
 }
 //计算两通道threshold
@@ -136,34 +127,28 @@ int CalThreshold(Mat &img2,Auto_TemplateMatching* at)
     int dif=-1;
     int return_val=low_threshold;
     Mat img2_;
-    Canny(img2, img2_, low_threshold, low_threshold * 3);
-    //for (int i = 0; i < at->ref_width; i++)
-    //{
-    //    for (int j = 0; j < at->ref_height; j++)
-    //    {
-    //        total_intense += img2_.at<uchar>(i + at->ref_x, j + at->ref_y);
-    //    }
-    //}
-    //dif1 = (total_intense - ref_total_intense) ^ 2;
+    int width = img2_.cols;
+    int height = img2_.rows;
     for (low_threshold; low_threshold < cur_thresh + 10; low_threshold++)
     {
+        total_intense = 0;
         Canny(img2, img2_, low_threshold, low_threshold * 3);
-        for (int i = 0; i < at->ref_width; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < at->ref_height; j++)
+            for (int j = 0; j < height; j++)
             {
-                total_intense += img2_.at<uchar>(i + at->ref_x, j + at->ref_y);
+                total_intense += img2_.at<uchar>(Point(i, j));
             }
         }
         if (dif == -1)
         {
-            dif = (total_intense - ref_total_intense) ^ 2;
+            dif = abs(total_intense - ref_total_intense);
         }
         else
         {
-            if (((total_intense - ref_total_intense) ^ 2) < dif)
+            if ((abs(total_intense - ref_total_intense)) < dif)
             {
-                dif = (total_intense - ref_total_intense) ^ 2;
+                dif = abs(total_intense - ref_total_intense) ;
                 return_val = low_threshold;
             }
         }
@@ -172,6 +157,8 @@ int CalThreshold(Mat &img2,Auto_TemplateMatching* at)
 }
 void Auto_TemplateMatching::on_button_calDif_clicked()
 {
+
+
     //检查并提取样本框尺寸数据
 	if (ui->lineEdit_refPos->text().split(' ').size() != 2 || ui->lineEdit_refSize->text().split(' ').size() != 2)
 	{
@@ -194,12 +181,35 @@ void Auto_TemplateMatching::on_button_calDif_clicked()
 		return;
 	}
 
+    int width = img1_.cols;
+    int height = img1_.rows;
+    //首先计算边缘图像的总强度值
+    ref_total_intense = 0;
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            ref_total_intense += img1_.at<uchar>(Point(i, j));
+        }
+    }
 
     //自动计算各个通道的threshold
+    int channel = 0;
+    int temp_threshold;
+    threshold_array.clear();
+    do
+    {
+        string string_file_name = string(astr_folder_name) + string("\\bmp\\") + format("%02d", channel) + string("\\out.0001.bmp");
+        channel++;
+        img2 = imread(string_file_name, IMREAD_COLOR);
+        if (img2.empty())
+        {
+            break;
+        }
+        temp_threshold=CalThreshold(img2, this);
+        threshold_array.push_back(temp_threshold);
+    } while (!img2.empty());
 
-
-	int width = img1_.cols;
-	int height = img1_.rows;
 	//设置样本框
 	ref_x = ref_pos.x;
 	ref_y = ref_pos.y;
@@ -222,81 +232,79 @@ void Auto_TemplateMatching::on_button_calDif_clicked()
         offy_range1 = (ref_y - 200 < 0) ? 0 : (ref_y - 200);
         offx_range2 = (ref_x + 200 + ref_width > width + 1) ? (width - ref_width + 1) : (ref_x + 200);
         offy_range2 = (ref_y + 200 + ref_height > height + 1) ? (height - ref_height + 1) : (ref_y + 200);
+        offx_range = offx_range2 - offx_range1;
+        offy_range = offy_range2 - offy_range1;
     }
 
 	vector<double>dif_arr;
 	double dif = 0, dif_ = 0;
 	double d1, d2;
-	//求均方差
-	for (int i = offy_range1; i < offy_range2; i++)
-	{
-		for (int j = offx_range1; j < offx_range2; j++)
-		{
-			for (int i_ = 0; i_ < ref_height; i_++)
-			{
-				for (int j_ = 0; j_ < ref_width; j_++)
-				{
-					d1 = img1_.at<uchar>(ref_y + i_, ref_x + j_);
-					d2 = img2_.at<uchar>(i_ + i, j_ + j);
-					dif_ = (d1 * d2);
-					//dif_ = dif_ * dif_;
-					dif += dif_;
-				}
-			}
-			prog = (i - offy_range1 + 1) / (offy_range2 - offy_range1);
-			dif = dif / ref_height / ref_width;
-			dif_arr.push_back(dif);
-			dif = 0;
-		}
-	}
+    channel = 0;
+    do
+    {
+        string string_file_name = string(astr_folder_name) + string("\\bmp\\") + format("%02d", channel) + string("\\out.0001.bmp");
+        img2 = imread(string_file_name, IMREAD_COLOR);
+        if (img2.empty()) {
+            break;
+        }
+        Canny(img2, img2_, threshold_array[channel], threshold_array[channel] * 3);
+        channel++;
+        //求均方差
+        for (int i = offy_range1; i < offy_range2; i++)
+        {
+            for (int j = offx_range1; j < offx_range2; j++)
+            {
+                for (int i_ = 0; i_ < ref_height; i_++)
+                {
+                    for (int j_ = 0; j_ < ref_width; j_++)
+                    {
+                        d1 = img1_.at<uchar>(ref_y + i_, ref_x + j_);
+                        d2 = img2_.at<uchar>(i_ + i, j_ + j);
+                        dif_ = (d1 * d2);
+                        //dif_ = dif_ * dif_;
+                        dif += dif_;
+                    }
+                }
+                prog = (i - offy_range1 + 1) / (offy_range2 - offy_range1);
+                dif = dif / ref_height / ref_width;
+                dif_arr.push_back(dif);
+                dif = 0;
+            }
+        }
+        vector<double>::iterator min_pos = max_element(dif_arr.begin(), dif_arr.end());
+        int dif_pos = min_pos - dif_arr.begin();
+        int minor = *min_pos;
+        int offy = int(floor(double(dif_pos) / double(offx_range)));
+        int offx = dif_pos - offy * offx_range;
+        final_off.y = offy + offy_range1 - ref_y;
+        final_off.x = offx + offx_range1 - ref_x;
+        off_array.push_back(final_off);
+    } while (!img2.empty());
 
 
-
-	vector<double>::iterator min_pos = max_element(dif_arr.begin(), dif_arr.end());
-	int dif_pos = min_pos - dif_arr.begin();
-	int minor = *min_pos;
-	int offy = int(floor(double(dif_pos) / double(offx_range)));
-	int offx = dif_pos - offy * offx_range;
-	final_off.y = offy + offy_range1 - ref_y;
-	final_off.x = offx + offx_range1 - ref_x;
-	//ui->label_offset->setText(QString::number(final_off.x) + " " + QString::number(final_off.y));
+    OffsetOutput(this);
 	ref_pos = Point(-1, -1);
 
 	return;
 
 }
 
-void CalDifAT(Mat& img1_, Mat& img2_, vector<double>& dif_arr, Auto_TemplateMatching* tp)
+void OffsetOutput(Auto_TemplateMatching* at)
 {
+    fstream fs;
+    string offset_file_name;
+    offset_file_name = string(at->astr_folder_name) + "\\OffsetData.txt";
 
-    double dif = 0, dif_ = 0;
-    double d1, d2;
-    //求均方差
-    for (int i = tp->offy_range1; i < tp->offy_range2; i++)
+    fs.open(offset_file_name, ios::out | ios::in | ios::app);
+    time_t now = time(0);
+    fs << "计算日期:" << ctime(&now) << endl;
+    fs << "通道总数:" << at->off_array.size() << endl;
+    int i = 0;
+    for (vector<Point>::iterator iter = at->off_array.begin(); iter != at->off_array.end(); iter++,i++)
     {
-        for (int j = tp->offx_range1; j < tp->offx_range2; j++)
-        {
-            for (int i_ = 0; i_ < tp->ref_height; i_++)
-            {
-                for (int j_ = 0; j_ < tp->ref_width; j_++)
-                {
-                    d1 = img1_.at<double>(tp->ref_y + i_, tp->ref_x + j_);
-                    d2 = img2_.at<double>(i_ + i, j_ + j);
-                    dif_ = (d1 - d2);
-                    //dif_ = (double(IndexGray(img1_, ref_x + j_, ref_y + i_)) - double(IndexGray(img2_, j_ + j, i_ + i)));
-                    dif_ = dif_ * dif_;
-                    dif += dif_;
-                }
-            }
-            tp->prog = (i - tp->offy_range1 + 1) / (tp->offy_range2 - tp->offy_range1);
-            dif = dif / tp->ref_height / tp->ref_width;
-            dif_arr.push_back(dif);
-            dif = 0;
-        }
+        fs << "x" << i << "=" << iter->x << endl;
+        fs << "y" << i << "=" << iter->y << endl;
     }
-
-    return;
-
 }
 
 void Auto_TemplateMatching::on_button_help_clicked()

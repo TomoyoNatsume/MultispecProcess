@@ -22,7 +22,7 @@ public:
     //友元函数
     friend void CannyTrackbarCallbackAT(int, void*);
     friend void OnMouseForRefAT(int event, int x, int y, int, void* userdata);
-    friend void CalDifAT(Mat& img1_, Mat& img2_, vector<double>& dif_arr, Auto_TemplateMatching* tp);
+    friend void OffsetOutput(Auto_TemplateMatching* at);
     friend int CalThreshold(Mat& img2, Auto_TemplateMatching* at);
 
 private slots:
@@ -46,10 +46,11 @@ private:
     //样本框强度总量
     int ref_total_intense;
 
-    vector<Point>dif_array;
+    vector<Point>off_array;
     vector<int>threshold_array;
         //文件夹路径：
     TCHAR folder_name[MAX_PATH];
+    char astr_folder_name[MAX_PATH];
         //参考通道号：
         
         //要处理的时间序号：

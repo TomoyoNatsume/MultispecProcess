@@ -202,6 +202,8 @@ void TemplateMatching::on_button_calDif_clicked()
 		offy_range1 = (ref_y - 200 < 0) ? 0 : (ref_y - 200);
 		offx_range2 = (ref_x + 200 + ref_width > width + 1) ? (width - ref_width + 1) : (ref_x + 200);
 		offy_range2 = (ref_y + 200 + ref_height > height + 1) ? (height - ref_height + 1) : (ref_y + 200);
+		offx_range = offx_range2 - offx_range1;
+		offy_range = offy_range2 - offy_range1;
 	}
 
 	vector<double>dif_arr;
