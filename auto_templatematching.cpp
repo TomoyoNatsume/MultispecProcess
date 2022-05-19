@@ -122,20 +122,18 @@ int CalThreshold(Mat &img2,Auto_TemplateMatching* at)
 {
     int cur_thresh = at->low_threshold1;
     int ref_total_intense = at->ref_total_intense;
-    int low_threshold=(cur_thresh-10)<5?5:(cur_thresh-10);
+    int low_threshold=(cur_thresh-3)<10?10:(cur_thresh-3);
     int total_intense = 0;
     int dif=-1;
     int return_val=low_threshold;
     Mat img2_;
-    int width = img2_.cols;
-    int height = img2_.rows;
-    for (low_threshold; low_threshold < cur_thresh + 10; low_threshold++)
+    for (low_threshold; low_threshold < cur_thresh + 7; low_threshold++)
     {
         total_intense = 0;
         Canny(img2, img2_, low_threshold, low_threshold * 3);
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < img2_.cols; i++)
         {
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < img2_.rows; j++)
             {
                 total_intense += img2_.at<uchar>(Point(i, j));
             }
@@ -242,12 +240,21 @@ void Auto_TemplateMatching::on_button_calDif_clicked()
     channel = 0;
     do
     {
+        dif_arr.clear();
+
         string string_file_name = string(astr_folder_name) + string("\\bmp\\") + format("%02d", channel) + string("\\out.0001.bmp");
         img2 = imread(string_file_name, IMREAD_COLOR);
         if (img2.empty()) {
             break;
         }
         Canny(img2, img2_, threshold_array[channel], threshold_array[channel] * 3);
+        //if (channel == 0 || channel == 1)
+        //{
+        //    channel++;
+        //    off_array.push_back(Point(0, 0));
+        //    continue;
+
+        //}
         channel++;
         //求均方差
         for (int i = offy_range1; i < offy_range2; i++)
@@ -291,20 +298,24 @@ void Auto_TemplateMatching::on_button_calDif_clicked()
 
 void OffsetOutput(Auto_TemplateMatching* at)
 {
-    fstream fs;
-    string offset_file_name;
-    offset_file_name = string(at->astr_folder_name) + "\\OffsetData.txt";
-
-    fs.open(offset_file_name, ios::out | ios::in | ios::app);
+    fstream fs, fs_header;
+    string offset_file_name, offset_header_file_name;
+    offset_file_name = string(at->astr_folder_name) + "\\OffsetData.csv";
+    offset_header_file_name = string(at->astr_folder_name) + "\\OffsetDataHeader.txt";
+    fs.open(offset_file_name, ios::out | ios::in | ios::trunc);
+    fs_header.open(offset_header_file_name, ios::out | ios::trunc);
     time_t now = time(0);
-    fs << "计算日期:" << ctime(&now) << endl;
-    fs << "通道总数:" << at->off_array.size() << endl;
+    fs_header << "Data:" << ctime(&now);
+    fs_header << "Channels:" << at->off_array.size() << endl;
+    fs_header << "Position:" << at->ref_pos.x << ' ' << at->ref_pos.y << endl;
+    fs_header << "Size:" << at->ref_size.x << ' ' << at->ref_size.y << endl;
     int i = 0;
-    for (vector<Point>::iterator iter = at->off_array.begin(); iter != at->off_array.end(); iter++,i++)
+    for (vector<Point>::iterator iter = at->off_array.begin(); iter != at->off_array.end(); iter++, i++)
     {
-        fs << "x" << i << "=" << iter->x << endl;
-        fs << "y" << i << "=" << iter->y << endl;
+        fs << iter->x << ' ';
+        fs << iter->y << endl;
     }
+    return;
 }
 
 void Auto_TemplateMatching::on_button_help_clicked()

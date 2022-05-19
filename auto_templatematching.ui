@@ -115,7 +115,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>样本框位置：（可以右侧按钮手动框选）</string>
+     <string>样本框位置：（可以左侧按钮手动框选）</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">

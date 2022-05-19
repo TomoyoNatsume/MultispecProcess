@@ -59,9 +59,9 @@ void SpecExtract::on_button_openFolder_clicked()
     specextract_flags = specextract_flags | 0b00000001;
     ui->label_opened_folder->setText(QString::fromStdWString(L"已打开文件夹：") + QString::fromStdWString(folder_name));
     USES_CONVERSION;
-    dif_filename = QString::fromStdWString(folder_name) + "\\deal.ini";
+    dif_filename = QString::fromStdWString(folder_name) + "\\OffsetData.csv";
     conf_filename = QString::fromStdWString(folder_name) + "\\gpcx.ini";
-    ;
+    dif_vec.clear();
     this->readDifFile(dif_filename.toStdWString().c_str());
     this->readConfFile(conf_filename.toStdWString().c_str());
     return;
@@ -80,30 +80,67 @@ void SpecExtract::readDifFile(TCHAR const* filename)
     {
 
         getline(fs, str);
-        std::regex reg("[xy]\\d+=(-?)\\d+");
+        std::regex reg("[-]?\\d+\\s[-]?\\d+");
         string parse1, parse2, parse3;
         if (std::regex_match(str, reg))
         {
-            std::regex reg2("=");
-            std::regex reg4("\\d+");
-            std::sregex_token_iterator pos(str.begin(), str.end(), reg2, -1);
-            string parse4 = pos->str();
-            std::sregex_token_iterator pos3(parse4.begin(), parse4.end(), reg4, 0);
-            parse2 = pos3->str();
-            parse3 = (++pos)->str();
-            std::regex reg3("[xy]");
-            std::sregex_token_iterator pos2(str.begin(), str.end(), reg3, 0);
-            if (pos2->str() == "x")
-            {
-                dif_vec[atoi(parse2.c_str())].x = atoi(parse3.c_str());
-            }
-            if (pos2->str() == "y")
-            {
-                dif_vec[atoi(parse2.c_str())].y = atoi(parse3.c_str());
-            }
+            std::regex space("\\s");
+            std::sregex_token_iterator pos(str.begin(), str.end(), space, -1);
+            Point dif;
+            dif.x = atoi(pos->str().c_str());
+            pos++;
+            dif.y = atoi(pos->str().c_str());
+            dif_vec.push_back(dif);
+            cout << dif.x << ',' << dif.y << endl;
         }
     }
+    WCHAR header_file_name[MAX_PATH];
+    wcscpy(header_file_name, folder_name);
+    wcscat(header_file_name, L"\\OffsetDataHeader.txt");
+    fstream fs_header(header_file_name, ios::in);
+    string buffer;
+    //自动获取ref尺寸和位置
+    if (fs_header.is_open())
+    {
+        Point ref_pos, ref_size;
+        regex reg1("Position:.*");
+        regex reg2("Size:.*");
+        regex reg3("[-]?\\d+");
+        bool b1 = 0, b2 = 0;
+        while (!fs.eof())
+        {
+            fs >> buffer;
+            stringstream ss;
+            if (regex_match(buffer, reg1))
+            {
+                cmatch m;
+                regex_search(buffer.c_str(), m, reg3);
+                if (m.size() != 2)break;
+                ss << m[0];
+                ss >> ref_pos.x;
+                ss << m[1];
+                ss >> ref_pos.y;
+                b1 = true;
+            }
+            if (regex_match(buffer, reg2))
+            {
+                cmatch m;
+                regex_search(buffer.c_str(), m, reg3);
+                if (m.size() != 2)break;
+                ss << m[0];
+                ss >> ref_size.x;
+                ss << m[1];
+                ss >> ref_size.y;
+                b2 = true;
+            }
 
+        }
+        if (b1 && b2)
+        {
+            this->ui->lineEdit_refPos->setText(QString::number(ref_pos.x) + " " + QString::number(ref_pos.y));
+            this->ui->lineEdit_refSize->setText(QString::number(ref_size.x) + " " + QString::number(ref_size.y));
+        }
+    }
     ui->label_opened_dif_file->setText(QString::fromStdWString(L"已打开文件：") + dif_filename);
     return;
 }
@@ -221,6 +258,14 @@ void SpecExtract::on_button_getSpec_clicked()
     cv::Mat img;
     char num2[10];
     int x, y;
+
+    //读取样本框位置
+
+    bool toInt_isok1, toInt_isok2, toInt_isok3, toInt_isok4;
+    ref_se_pos.x = ui->lineEdit_refPos->text().split(' ')[0].toInt(&toInt_isok1);
+    ref_se_pos.y = ui->lineEdit_refPos->text().split(' ')[1].toInt(&toInt_isok2);
+    ref_se_size.x = ui->lineEdit_refSize->text().split(' ')[0].toInt(&toInt_isok3);
+    ref_se_size.y = ui->lineEdit_refSize->text().split(' ')[1].toInt(&toInt_isok4);
     
     //文件流
     fstream fs;
@@ -275,6 +320,7 @@ void SpecExtract::on_button_getSpec_clicked()
         fs.seekp(-1,ios::cur);
         fs << endl;
     }
+    QMessageBox::information(this, "完成", QString::fromStdWString(L"提取成功"), QMessageBox::Ok);
     return;
 }
 void SpecExtract::on_button_help_clicked()

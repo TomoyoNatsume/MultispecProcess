@@ -34,7 +34,7 @@ using namespace std;
 	 bi.hwndOwner = NULL;
 	 bi.pszDisplayName = szBuffer;
 	 bi.lpszTitle = _T("从下面选文件夹目录:");
-	 bi.ulFlags = BIF_RETURNFSANCESTORS;
+	 bi.ulFlags = BIF_RETURNFSANCESTORS;	 
 	 LPITEMIDLIST idl = SHBrowseForFolder(&bi);
 	 if (NULL == idl)
 	 {
